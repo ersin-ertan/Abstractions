@@ -1,10 +1,17 @@
 package com.mmsofts.apachecommons.cmdChain;
 
+import org.apache.commons.chain.Command;
+import org.apache.commons.chain.Context;
+import org.apache.commons.chain.impl.ChainBase;
+import org.apache.commons.chain.impl.ContextBase;
+
 /**
  * Created by mms on 5/30/16.
  */
 
 /*
+
+For the definition see: http://commons.apache.org/proper/commons-chain/
 * Chain API models a computation as a series of "commands" that can be combined into a "chain".
 * The API for a command consists of a single method (execute()), which is passed a "context"
 * parameter containing the dynamic state of the computation, and whose return value is a boolean
@@ -43,6 +50,151 @@ the classname level. A Catalog is a collection of logically named Commands (or C
 public class CommandChainEx {
 
 
+}
 
+// for the example see: http://www.onjava.com/pub/a/onjava/2005/03/02/commonchains.html?page=1
+
+// this is the template
+abstract class DoSteps {
+
+    public void doSteps() {
+        a();
+        b();
+        c();
+    }
+
+    public abstract void a();
+
+    public abstract void c();
+
+    public abstract void b();
+}
+
+class A implements Command {
+    @Override
+    public boolean execute(Context context) throws Exception {
+        context.put("custName", "joe");
+        // with specialized context, you can do
+//        context.setCustName();
+        return false;
+    }
+}
+
+class B implements Command {
+    @Override
+    public boolean execute(Context context) throws Exception {
+        // do b
+        return false;
+    }
+}
+
+class C implements Command {
+    @Override
+    public boolean execute(Context context) throws Exception {
+        // do c
+        String s = (String) context.get("custName");
+        // should the null check be here or should it be wrapped in a try catch
+        if(s == null) throw new IllegalArgumentException("s == null");
+
+        // do something with the string
+
+        return false;
+    }
+}
+
+class DoStepsChain extends ChainBase {
+    public DoStepsChain(){
+        super();
+        addCommand(new A());
+        addCommand(new B());
+        addCommand(new C());
+    }
+
+    public static void run(){
+        Command process = new DoStepsChain();
+        Context context = new ContextBase();
+        // or with sepecializedContext
+        Context context1 = new SpecializedContext();
+        try {
+            process.execute(context);
+            // which would do A, B, C
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
 }
+
+class SpecializedContext extends ContextBase{
+    public String getCustName() {
+        return custName;
+    }
+
+    public void setCustName(String custName) {
+        this.custName = custName;
+    }
+
+    private String custName;
+}
+
+// since retrieving the commands from the network is a command itself then it could be chained too
+// chains can be nested with the LookupCommand, which may require a Catalogue...
+// A command returns true from its execute method.
+//The end of the chain is reached.
+//        A command throws an exception.
+
+// Filter extends Command, adding a postprocess method.
+// public boolean postprocess(Context context, Exception exception);
+
+/**
+ * Chain Filters are executed in the order that they appear in the command sequence. Likewise, each
+ * Filter's postprocess method is called in reverse order
+ *
+ * public class SellVehicleExceptionHandler implements Filter {
+
+    public boolean execute(Context context) throws Exception {
+        System.out.println("Filter.execute() called.");
+        return false;
+    }
+
+    public boolean postprocess(Context context, Exception exception) {
+        if (exception == null) return false;
+        System.out.println("Exception " + exception.getMessage() + " occurred.");
+        return true;
+    }
+ }
+
+ filter will be post process will be called at the end of the chain
+ */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

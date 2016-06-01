@@ -66,7 +66,7 @@ public final class Okio {
 
             @Override
             public SomeClass someClass() {
-                return null;
+                return SomeClass.DEFAULT;
             }
         };
     }
