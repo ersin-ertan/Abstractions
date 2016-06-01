@@ -48,7 +48,7 @@ public class Google {
         }
     }
     private Google(Activity activity) {
-        Frag fragment = (Frag)activity.getFragmentManager().getFragment(null, "TheFragment");
+        fragment = (Frag)activity.getFragmentManager().getFragment(null, "TheFragment");
     }
 
     public Context getSomeServiceFromFragment(){

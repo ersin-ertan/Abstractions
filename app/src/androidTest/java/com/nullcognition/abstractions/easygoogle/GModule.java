@@ -5,4 +5,6 @@ package com.nullcognition.abstractions.easygoogle;
  */
 
 public abstract class GModule<T> {
+
+    Frag f;
 }
