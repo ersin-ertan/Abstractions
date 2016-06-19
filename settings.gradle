@@ -1,1 +1,1 @@
-include ':app', ':apachecommons'
+include ':app', ':apachecommons', ':hierarchytree'
