@@ -17,31 +17,33 @@ public class FactoryUpdate {
     public static Runnable divisionByTwoPropagation(final Node n, final long delta, FadeIntensity fadeIntensity) {
         switch (fadeIntensity) {
             case HIGH:
-                return new Runnable() {
-                    @Override
-                    public void run() {
-                        if (delta % 2 == 0) n.updateValue(delta / 2);
-                        else if (delta > 1) n.updateValue((delta - 1) / 2);
-                    }
-                };
+                return FadeIntensityHigh(n, delta, fadeIntensity);
 //            case MED:
 //            case LOW:
             case DELTA:
-                return new Runnable() {
-                    @Override
-                    public void run() {
-                        if (delta % 2 == 0) n.updateValue(delta);
-                        else if (delta > 1) n.updateValue((delta - 1) / 2);
-                    }
-                };
+                return FadeIntensityDelta(n, delta, fadeIntensity);
             default:
-                return new Runnable() {
-                    @Override
-                    public void run() {
-                        if (delta % 2 == 0) n.updateValue(delta);
-                        else if (delta > 1) n.updateValue((delta - 1) / 2);
-                    }
-                };
+                return FadeIntensityDelta(n, delta, fadeIntensity);
         }
+    }
+
+    private static Runnable FadeIntensityHigh(final Node n, final long delta, FadeIntensity fadeIntensity) {
+        return new Runnable() {
+            @Override
+            public void run() {
+                if (delta % 2 == 0) n.updateValue(delta / 2);
+                else if (delta > 1) n.updateValue((delta - 1) / 2);
+            }
+        };
+    }
+
+    private static Runnable FadeIntensityDelta(final Node n, final long delta, FadeIntensity fadeIntensity) {
+        return new Runnable() {
+            @Override
+            public void run() {
+                if (delta % 2 == 0) n.updateValue(delta);
+                else if (delta > 1) n.updateValue((delta - 1) / 2);
+            }
+        };
     }
 }
